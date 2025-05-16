@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word Replace Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px 5px 10px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-replace {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-replace-all {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .btn-copy {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .btn-reset {
+      background-color: #9e9e9e;
+      color: white;
+    }
+
+    .btn-clean {
+      background-color: #795548;
+      color: white;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-height: 100px;
+      background: #fffbe6;
+      white-space: pre-wrap;     /* Preserve newlines */
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 600px) {
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Word Replace Tool</h2>
+
+  <label><strong>Enter Text:</strong></label>
+  <textarea id="inputText" rows="8" placeholder="Type or paste your text here..."></textarea>
+
+  <label><strong>Find:</strong></label>
+  <input type="text" id="findWord" placeholder="Word or symbol to find"/>
+
+  <label><strong>Replace With:</strong></label>
+  <input type="text" id="replaceWord" placeholder="New word or symbol"/>
+
+  <div>
+    <button class="btn-replace" onclick="replaceWord()">Replace</button>
+    <button class="btn-replace-all" onclick="replaceAll()">Replace All</button>
+    <button class="btn-copy" onclick="copyToClipboard()">Copy</button>
+    <button class="btn-reset" onclick="resetText()">Reset</button>
+    <button class="btn-clean" onclick="cleanText()">Clean Text</button>
+  </div>
+
+  <label><strong>Result:</strong></label>
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+  let originalText = "";
+  let currentText = "";
+
+  // Load input into original and current state
+  document.getElementById("inputText").addEventListener("input", function () {
+    originalText = this.value;
+    currentText = originalText;
+  });
+
+  function replaceWord() {
+    const find = document.getElementById("findWord").value;
+    const replace = document.getElementById("replaceWord").value;
+
+    if (!find) return alert("Please enter a word/symbol to find.");
+    if (!currentText) return alert("Please enter some text first.");
+
+    currentText = currentText.replace(find, replace);
+    showResult();
+  }
+
+  function replaceAll() {
+    const find = document.getElementById("findWord").value;
+    const replace = document.getElementById("replaceWord").value;
+
+    if (!find) return alert("Please enter a word/symbol to find.");
+    if (!currentText) return alert("Please enter some text first.");
+
+    const regex = new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    currentText = currentText.replace(regex, replace);
+    showResult();
+  }
+
+  function showResult() {
+    document.getElementById("result").textContent = currentText;
+  }
+
+  function copyToClipboard() {
+    const result = document.getElementById("result").textContent;
+    if (!result) return alert("Nothing to copy!");
+
+    navigator.clipboard.writeText(result).then(() => {
+      alert("Copied to clipboard!");
+    }).catch(err => {
+      alert("Failed to copy.");
+    });
+  }
+
+  function resetText() {
+    if (!originalText) return alert("No original text to reset.");
+    currentText = originalText;
+    showResult();
+    alert("Text has been reset to original.");
+  }
+
+  function cleanText() {
+    if (!currentText) return alert("No text available to clean.");
+
+    // Remove emojis/icons
+    currentText = currentText.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDDEF]|\u2600-\u26FF|\u2B00-\u2BFF)/g, '');
+
+    // Remove unnecessary symbols (customize as needed)
+    const symbolsToRemove = /[`~#$%^&*+|<>{}\-=_—–]/g;
+    currentText = currentText.replace(symbolsToRemove, '');
+
+    showResult();
+    alert("Unnecessary symbols and icons removed.");
+  }
+</script>
+
+</body>
+</html>
