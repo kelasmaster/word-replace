@@ -178,7 +178,7 @@
     currentText = currentText.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDDEF]|\u2600-\u26FF|\u2B00-\u2BFF)/g, '');
 
     // Remove unnecessary symbols (customize as needed)
-    const symbolsToRemove = /[`~#$%^&*+|<>{}\-=_—–]/g;
+    const symbolsToRemove = /[`~^*+|<>{}_—–]/g;
     currentText = currentText.replace(symbolsToRemove, '');
 
     showResult();
